@@ -7,7 +7,7 @@ const options = {
 
 const client = net.connect(options, () => {
   console.log('connected to server');
-  client.write('hello server');
+  //client.write('hello server');
 });
 
 client.on('data', (data) => {
@@ -16,7 +16,7 @@ client.on('data', (data) => {
 
 process.stdin.on('readable', () => {
   let chunk = process.stdin.read();
-  if(chunk !== null){
-    client.write(chunk);
-  }
+    if(chunk !== null){
+      client.write(chunk);
+    }
 });

@@ -11,7 +11,7 @@ const server = net.createServer((request) => {
   request.name = request.remoteAddress + ":" + request.remotePort;
 
   //send welcome message and announce to all
-  request.write('Welcome ' + request.name + "\n");
+  request.write('Welcome: ' + request.name + "\n");
   broadcast(request.name + " joined the chat", request.name);
 
   //handle incoming messages from clients
@@ -42,10 +42,22 @@ const server = net.createServer((request) => {
     //log it to the server output
     process.stdout.write(message);
   }
+
   clients.push(request);
 });
 
 server.listen({port:6969}, () => {
   const address = server.address();
   console.log(`Opened server on ${address.port}`);
+});
+
+process.stdin.on('readable', () => {
+  let chunk = process.stdin.read();
+    if(chunk !== null){
+      clients.forEach(function(client){
+        client.write('Bossman: ' + chunk);
+        //console.log();
+      });
+
+    }
 });
