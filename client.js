@@ -7,7 +7,7 @@ const options = {
 
 const client = net.connect(options, () => {
   console.log('connected to server');
-  //client.write('hello server');
+
 });
 
 client.on('data', (data) => {

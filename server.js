@@ -6,23 +6,40 @@ let clients = [];
 
 //start server
 const server = net.createServer((request) => {
-
   //identify this client
   request.name = request.remoteAddress + ":" + request.remotePort;
 
   //send welcome message and announce to all
-  request.write('Welcome: ' + request.name + "\n");
-  broadcast(request.name + " joined the chat", request.name);
+  request.write('Welcome!: ' + request.name + "\n");
+  broadcast(request.name + " joined the chat");
+  request.write("Please Type in name, then press ENTER to start Chat" + "\n");
+  //console.log(request.name);
 
   //handle incoming messages from clients
   request.on('data',(data) => {
-  broadcast(request.name + ": " + data, request);
-    console.log(data.toString());
+
+    data.toString();
+
+    data = data.slice(0, data.length -1);
+
+    if(request.name === request.remoteAddress + ":" + request.remotePort){
+
+      request.name = data;
+
+      console.log(data.toString() + ' has joined');
+
+
+    } else {
+
+      broadcast(request.name + ": " + data, request);
+
+    }
+
   });
 
   //removes client from tracker when they leave
   request.on('end', () => {
-    console.log('connection closed');
+    console.log('Someone left the chatroom');
     let selected = (clients.indexOf(request));
     clients.splice(selected, 1);
 
@@ -40,13 +57,13 @@ const server = net.createServer((request) => {
     });
 
     //log it to the server output
-    process.stdout.write(message);
+    process.stdout.write(message + '\n');
   }
 
   clients.push(request);
 });
 
-server.listen({port:6969}, () => {
+server.listen({port:6969, 'host': '0.0.0.0'}, () => {
   const address = server.address();
   console.log(`Opened server on ${address.port}`);
 });
@@ -56,8 +73,9 @@ process.stdin.on('readable', () => {
     if(chunk !== null){
       clients.forEach(function(client){
         client.write('Bossman: ' + chunk);
-        //console.log();
+
       });
 
     }
 });
+
