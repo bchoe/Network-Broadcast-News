@@ -18,7 +18,7 @@ const server = net.createServer((request) => {
   //handle incoming messages from clients
   request.on('data',(data) => {
 
-    data.toString();
+    newUser = data.toString();
 
     data = data.slice(0, data.length -1);
 
@@ -26,7 +26,7 @@ const server = net.createServer((request) => {
 
       request.name = data;
 
-      console.log(data.toString() + ' has joined');
+      console.log(newUser + ' has joined');
 
 
     } else {
@@ -72,7 +72,7 @@ process.stdin.on('readable', () => {
   let chunk = process.stdin.read();
     if(chunk !== null){
       clients.forEach(function(client){
-        client.write('Bossman: ' + chunk);
+        client.write('ADMIN: ' + chunk);
 
       });
 
