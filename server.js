@@ -1,8 +1,8 @@
 //Load tcp library
 const net = require('net');
 
-//keep track of chat clients
-let clients = [];
+//keep track of chat users
+let users = [];
 
 //start server
 const server = net.createServer((request) => {
@@ -15,10 +15,10 @@ const server = net.createServer((request) => {
   request.write("Please Type in name, then press ENTER to start Chat" + "\n");
   //console.log(request.name);
 
-  //handle incoming messages from clients
+  //handle incoming messages from users
   request.on('data',(data) => {
 
-    newUser = data.toString();
+    data.toString();
 
     data = data.slice(0, data.length -1);
 
@@ -26,8 +26,7 @@ const server = net.createServer((request) => {
 
       request.name = data;
 
-      console.log(newUser + ' has joined');
-
+      console.log(data.toString() + ' has joined');
 
     } else {
 
@@ -39,15 +38,15 @@ const server = net.createServer((request) => {
 
   //removes client from tracker when they leave
   request.on('end', () => {
-    console.log('Someone left the chatroom');
-    let selected = (clients.indexOf(request));
-    clients.splice(selected, 1);
+    console.log('Left the chatroom');
+    let selected = (users.indexOf(request));
+    users.splice(selected, 1);
 
   });
 
-  //send a message to all clients
+  //send a message to all users
   function broadcast(message, sender){
-    clients.forEach(function(client){
+    users.forEach(function(client){
       if(client === sender) {
         return;
       } else {
@@ -59,8 +58,7 @@ const server = net.createServer((request) => {
     //log it to the server output
     process.stdout.write(message + '\n');
   }
-
-  clients.push(request);
+  users.push(request);
 });
 
 server.listen({port:6969, 'host': '0.0.0.0'}, () => {
@@ -71,7 +69,7 @@ server.listen({port:6969, 'host': '0.0.0.0'}, () => {
 process.stdin.on('readable', () => {
   let chunk = process.stdin.read();
     if(chunk !== null){
-      clients.forEach(function(client){
+      users.forEach(function(client){
         client.write('ADMIN: ' + chunk);
 
       });
